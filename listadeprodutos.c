@@ -81,15 +81,50 @@ int consultarValorUnitario(PLISTA l, int id){
   return 0;
 }
 
+PONT buscaValorTotalINS(PLISTA l, int tipo, int valorTotal, PONT* ant){
+  PONT atual;
+  int i;
 
+  *ant = l -> LISTADELISTAS[tipo];
+  atual = l->LISTADELISTAS[tipo]->proxProd;
+
+  for(i = 0; i < NUMTIPOS; i++){
+    atual = l -> LISTADELISTAS[i] -> proxProd;
+    while(atual){
+      if(atual -> quantidade * atual -> valorUnitario == valorTotal) return atual;
+      *ant = atual;
+      atual = atual -> proxProd;
+    }
+  }
+
+  return NULL;
+}
 
 
 
 bool inserirNovoProduto(PLISTA l, int id, int tipo, int quantidade, int valor){
+  PONT novo, ant;
 
-  /* COMPLETAR */
+  /* Testa se os valores recebidos são positivos e se o TIPO esta no intervalo correto */
+  if(id <= 0 || quantidade <= 0 || valor <= 0 || tipo < 0 || tipo > NUMTIPOS-1) return false;
 
-  return false;
+  /* Busca o id e analisa se ja existe um produto com o mesmo id */
+  novo = buscarID(l, id);
+  if(novo != NULL) return false;
+
+  /* Busca a posição certa do REGISTRO */
+  novo = buscaValorTotalINS(l, tipo, quantidade*valor, &ant);
+  if(novo != NULL) return false;
+
+  novo = (PONT) malloc(sizeof(REGISTRO));
+  novo -> id = id;
+  novo -> quantidade = quantidade;
+  novo -> valorUnitario = valor;
+
+  novo -> proxProd = ant -> proxProd;
+  ant -> proxProd = novo;
+
+  return true;
 }
 
 
