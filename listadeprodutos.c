@@ -116,6 +116,8 @@ bool inserirNovoProduto(PLISTA l, int id, int tipo, int quantidade, int valor){
   novo = buscaValorTotalINS(l, tipo, quantidade*valor, &ant);
   if(novo != NULL) return false;
 
+  l->LISTADELISTA[tipo]->proxProd = novo;
+  
   novo = (PONT) malloc(sizeof(REGISTRO));
   novo -> id = id;
   novo -> quantidade = quantidade;
