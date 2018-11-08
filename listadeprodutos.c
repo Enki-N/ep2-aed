@@ -88,13 +88,10 @@ PONT buscaValorTotalINS(PLISTA l, int tipo, int valorTotal, PONT* ant){
   *ant = l -> LISTADELISTAS[tipo];
   atual = l->LISTADELISTAS[tipo]->proxProd;
 
-  for(i = 0; i < NUMTIPOS; i++){
-    atual = l -> LISTADELISTAS[i] -> proxProd;
-    while(atual){
-      if(atual -> quantidade * atual -> valorUnitario == valorTotal) return atual;
-      *ant = atual;
-      atual = atual -> proxProd;
-    }
+  while(atual){
+    if(atual -> quantidade * atual -> valorUnitario == valorTotal) return atual;
+    *ant = atual;
+    atual = atual -> proxProd;
   }
 
   return NULL;
@@ -103,7 +100,7 @@ PONT buscaValorTotalINS(PLISTA l, int tipo, int valorTotal, PONT* ant){
 
 
 bool inserirNovoProduto(PLISTA l, int id, int tipo, int quantidade, int valor){
-  PONT novo, ant;
+  PONT novo, ant, atual;
 
   /* Testa se os valores recebidos são positivos e se o TIPO esta no intervalo correto */
   if(id <= 0 || quantidade <= 0 || valor <= 0 || tipo < 0 || tipo > NUMTIPOS-1) return false;
@@ -114,18 +111,19 @@ bool inserirNovoProduto(PLISTA l, int id, int tipo, int quantidade, int valor){
 
   /* Busca a posição certa do REGISTRO */
   novo = buscaValorTotalINS(l, tipo, quantidade*valor, &ant);
-  if(novo != NULL) return false;
 
-  l -> LISTADELISTAS[tipo] -> proxProd = novo;
-  
-  novo = (PONT) malloc(sizeof(REGISTRO));
-  novo -> id = id;
-  novo -> quantidade = quantidade;
-  novo -> valorUnitario = valor;
+  atual = (PONT) malloc(sizeof(REGISTRO));
+  atual -> id = id;
+  atual -> quantidade = quantidade;
+  atual -> valorUnitario = valor;
 
-  novo -> proxProd = ant -> proxProd;
-  ant -> proxProd = novo;
-
+  if(novo != NULL){
+    atual -> proxProd = ant -> proxProd;
+    ant -> proxProd = atual;
+  }else{
+    atual -> proxProd = NULL;
+    ant -> proxProd = atual;
+  }
   return true;
 }
 
