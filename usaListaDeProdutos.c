@@ -27,7 +27,7 @@ int main() {
   if(res) printf("Insercao retornou true (4)\n");
   else printf("Insercao retornou false (4)\n");
   exibirLog(f);
-/*
+
   res = inserirNovoProduto(f, -5, 6, 7, 8);
   if(res) printf("Insercao retornou true (5)\n");
   else printf("Insercao retornou false (5)\n");
@@ -64,7 +64,7 @@ int main() {
   if(res) printf("Remocao retornou true (2)\n");
   else printf("Remocao retornou false (2)\n");
   exibirLog(f);
-
+/*
   res = removerItensDeUmProduto(f, 3, 22);
   if(res) printf("Remocao retornou true (3)\n");
   else printf("Remocao retornou false (3)\n");
@@ -86,8 +86,8 @@ int main() {
   else printf("Remocao retornou false (6)\n");
   exibirLog(f);
 
-
-
+*/
+/*
   printf("################# ATUALIZANDO VALOR #######\n");
 
   res = atualizarValorDoProduto(f, 6, 1);
@@ -137,7 +137,6 @@ int main() {
   if(res) printf("Atualizacao retornou true (9)\n");
   else printf("Atualizacao retornou false (9)\n");
   exibirLog(f);
-
 
 
 */

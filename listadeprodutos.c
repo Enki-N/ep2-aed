@@ -89,7 +89,7 @@ PONT buscaValorTotalINS(PLISTA l, int tipo, int valorTotal, PONT* ant){
   atual = l->LISTADELISTAS[tipo]->proxProd;
 
   while(atual){
-    if(atual -> quantidade * atual -> valorUnitario == valorTotal) return atual;
+    if(atual -> quantidade * atual -> valorUnitario >= valorTotal) return atual;
     *ant = atual;
     atual = atual -> proxProd;
   }
@@ -97,7 +97,22 @@ PONT buscaValorTotalINS(PLISTA l, int tipo, int valorTotal, PONT* ant){
   return NULL;
 }
 
+int buscarTipo(PLISTA l, int id, PONT* ant){
+  PONT aux;
+  int i;
 
+  for (i=0;i<NUMTIPOS;i++){
+    *ant = l -> LISTADELISTAS[i];
+    aux = l->LISTADELISTAS[i]->proxProd;
+    while (aux) {
+      if (aux->id == id) return i;
+      aux = aux->proxProd;
+      *ant = aux;
+    }
+  }
+
+  return -1;
+}
 
 bool inserirNovoProduto(PLISTA l, int id, int tipo, int quantidade, int valor){
   PONT novo, ant, atual;
@@ -130,16 +145,45 @@ bool inserirNovoProduto(PLISTA l, int id, int tipo, int quantidade, int valor){
 
 
 bool removerItensDeUmProduto(PLISTA l, int id, int quantidade){
+  PONT apagar, aux, ant;
+  int tipo, valor, quant;
 
-  /* COMPLETAR */
+  if(id <= 0 || quantidade <= 0) return false;
 
-  return false;
+  aux = buscarID(l, id);
+  if(aux == NULL) return false;
+
+  tipo = buscarTipo(l, id, &ant);
+  quant = aux -> quantidade - quantidade;
+  valor = aux -> valorUnitario;
+
+  if(quantidade > aux -> quantidade) return false;
+
+  ant -> proxProd = aux -> proxProd;
+  free(aux);
+
+  inserirNovoProduto(l, id, tipo, quant, valor);
+
+  return true;
 }
 
 
 bool atualizarValorDoProduto(PLISTA l, int id, int valor){
+  PONT aux, ant;
+  int quant, tipo;
+  
+  if(valor <= 0) return false;
 
-  /* COMPLETAR */
+  aux = buscarID(l, id);
+  if(aux == NULL) return false;
 
-  return false;
+  tipo = buscarTipo(l, id, &ant);
+  quant = aux -> quantidade;
+
+  ant -> proxProd = aux -> proxProd;
+  free(aux);
+
+  inserirNovoProduto(l, id, tipo, quant, valor);
+
+  return true;
 }
