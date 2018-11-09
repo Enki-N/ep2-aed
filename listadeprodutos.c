@@ -81,6 +81,7 @@ int consultarValorUnitario(PLISTA l, int id){
   return 0;
 }
 
+/* Busca um REGISTRO a partir do seu VALOR TOTAL */
 PONT buscaValorTotalINS(PLISTA l, int tipo, int valorTotal, PONT* ant){
   PONT atual;
   int i;
@@ -97,6 +98,7 @@ PONT buscaValorTotalINS(PLISTA l, int tipo, int valorTotal, PONT* ant){
   return NULL;
 }
 
+/* Função que busca o tipo de um REGISTRO a partir do seu ID */
 int buscarTipo(PLISTA l, int id, PONT* ant){
   PONT aux;
   int i;
@@ -127,11 +129,13 @@ bool inserirNovoProduto(PLISTA l, int id, int tipo, int quantidade, int valor){
   /* Busca a posição certa do REGISTRO */
   novo = buscaValorTotalINS(l, tipo, quantidade*valor, &ant);
 
+  /* Alocando os valores do novo REGISTRO */
   atual = (PONT) malloc(sizeof(REGISTRO));
   atual -> id = id;
   atual -> quantidade = quantidade;
   atual -> valorUnitario = valor;
 
+  /* Ajustando os ponteiros */
   if(novo != NULL){
     atual -> proxProd = ant -> proxProd;
     ant -> proxProd = atual;
@@ -139,50 +143,58 @@ bool inserirNovoProduto(PLISTA l, int id, int tipo, int quantidade, int valor){
     atual -> proxProd = NULL;
     ant -> proxProd = atual;
   }
+
   return true;
 }
 
 
 
 bool removerItensDeUmProduto(PLISTA l, int id, int quantidade){
-  PONT apagar, aux, ant;
-  int tipo, valor, quant;
+  PONT aux, ant;
+  int valor, quant, tipo;
 
-  if(id <= 0 || quantidade <= 0) return false;
+  tipo = buscarTipo(l, id, &ant);
+
+  aux = buscarIDTipo(l, id, tipo);
+  if(aux == NULL) return false;
 
   aux = buscarID(l, id);
   if(aux == NULL) return false;
 
-  tipo = buscarTipo(l, id, &ant);
+  if(quantidade <= 0 || quantidade > aux -> quantidade) return false;
+
   quant = aux -> quantidade - quantidade;
   valor = aux -> valorUnitario;
-
-  if(quantidade > aux -> quantidade) return false;
 
   ant -> proxProd = aux -> proxProd;
   free(aux);
 
   inserirNovoProduto(l, id, tipo, quant, valor);
-
   return true;
+
 }
 
 
 bool atualizarValorDoProduto(PLISTA l, int id, int valor){
   PONT aux, ant;
   int quant, tipo;
-  
+
+  /* Testa se o VALOR recebido é positivo */
   if(valor <= 0) return false;
 
+  /* Busca o REGISTRO a partir do seu ID */
   aux = buscarID(l, id);
   if(aux == NULL) return false;
 
+  /* Armazena o TIPO e a QUANTIDADE do REGISTRO */
   tipo = buscarTipo(l, id, &ant);
   quant = aux -> quantidade;
 
+  /* Apaga o REGISTRO */
   ant -> proxProd = aux -> proxProd;
   free(aux);
 
+  /* Insere o REGISTRO com os valores novos */
   inserirNovoProduto(l, id, tipo, quant, valor);
 
   return true;
