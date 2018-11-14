@@ -150,33 +150,54 @@ bool inserirNovoProduto(PLISTA l, int id, int tipo, int quantidade, int valor){
 
 
 bool removerItensDeUmProduto(PLISTA l, int id, int quantidade){
-  PONT aux, ant;
+  PONT aux, ant, atual;
   int valor, quant, tipo;
 
+  /* Teste se a QUANTIDADE é positiva */
+  if(quantidade<=0) return false;
+
+  /* Busca o TIPO do REGISTRO */
   tipo = buscarTipo(l, id, &ant);
 
+  /* Busca o REGISTRO pelo ID e TIPO */
   aux = buscarIDTipo(l, id, tipo);
   if(aux == NULL) return false;
 
+  /* Busca o REGISTRO pelo ID */
   aux = buscarID(l, id);
   if(aux == NULL) return false;
 
-  if(quantidade <= 0 || quantidade > aux -> quantidade) return false;
-
+  /* Aloca os valores do REGISTRO */
   quant = aux -> quantidade - quantidade;
   valor = aux -> valorUnitario;
 
-  ant -> proxProd = aux -> proxProd;
+  /* Aloca a posição inicial para o nó cabeça da lista */
+  atual = l->LISTADELISTAS[tipo];
+
+
+  /* Percorre a estrutura para encontrar o REGISTRO */
+  while(atual -> proxProd){
+    if(atual->proxProd->id == aux->id){
+      ant = atual;
+      ant->proxProd = aux ->proxProd;
+      break;
+    }
+
+    atual = atual->proxProd;
+  }
+
+  /* Apaga o REGISTRO */
   free(aux);
 
+  /* Insere o REGISTRO com os novos valores */
   inserirNovoProduto(l, id, tipo, quant, valor);
-  return true;
 
+  return true;
 }
 
 
 bool atualizarValorDoProduto(PLISTA l, int id, int valor){
-  PONT aux, ant;
+  PONT aux, ant, atual;
   int quant, tipo;
 
   /* Testa se o VALOR recebido é positivo */
@@ -190,8 +211,21 @@ bool atualizarValorDoProduto(PLISTA l, int id, int valor){
   tipo = buscarTipo(l, id, &ant);
   quant = aux -> quantidade;
 
+  /* Aloca a posição inicial para o nó cabeça da lista */
+  atual = l->LISTADELISTAS[tipo];
+
+  /* Percorre a estrutura para encontrar o REGISTRO */
+  while(atual -> proxProd){
+    if(atual->proxProd->id == aux->id){
+      ant = atual;
+      ant->proxProd = aux ->proxProd;
+      break;
+    }
+
+    atual = atual->proxProd;
+  }
+
   /* Apaga o REGISTRO */
-  ant -> proxProd = aux -> proxProd;
   free(aux);
 
   /* Insere o REGISTRO com os valores novos */
